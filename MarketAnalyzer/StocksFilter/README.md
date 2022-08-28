@@ -50,7 +50,7 @@ using the sec-api.
             3. Interest coverage ratio (Operating income / Interest expenses)- The ability of a company to pay their interest on time 
                 and keep some extra cash for providing the product. a low ratio means the company struggles with payments
             
-       *  Efficiency Ratios - how effectively a company uses working capital to generate sales
+      *  Efficiency Ratios - how effectively a company uses working capital to generate sales
         
             1. Inventory Turnover(Cost of goods sold / Average inventory) - measeres how often inventory is replaced
             2. Assets Turnover Ratio(Net sales / Average total assets) - how much sales are made from assets
@@ -63,7 +63,7 @@ using the sec-api.
             6. Receivables turnover ratio (Net credit sales / Average accounts receivable)- The receivables turnover ratio helps 
                 companies measure how quickly they turn customers’ invoices into cash
         
-        * Profitability ratios - measure how a company generates profits using available resources over a given period:
+      * Profitability ratios - measure how a company generates profits using available resources over a given period:
             
             1. Gross Margin(Gross profit / Net sales)- measures how much profit a business makes after the
                 cost of goods and services compared to net sales.
@@ -72,7 +72,7 @@ using the sec-api.
             3. Return on Assets(Net income / Total assets) - determine how much profits they generate from total assets or resources,
             4. Return on equity(Net income / Total equity) - measures how much profit a business generates from shareholders’ equity
         
-       * Market Value Ratios- measers how valuable a company acctualy is:
+      * Market Value Ratios- measers how valuable a company acctualy is:
             
             1. Earning Per Share Ratio(Net earnings / Total shares outstanding) - shows how much profit is attributable 
                 to each company share.
