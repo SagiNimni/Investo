@@ -1,9 +1,13 @@
-from MarketAnalyzer.StocksFilter.DataExtractor import Extractor
+from MarketAnalyzer.StocksFilter.DataExtractor import Extractor, list_symbols
 from MarketAnalyzer.StocksFilter.constants import *
 
 
 def choose_stocks(sectors=None, market_cap=None):
-    extractor = Extractor(5)
+
+    list_symbols(r'.\checklist')
+
+    extractor = Extractor(5, r'.\checklist')
+
     if market_cap is None:
         stocks = extractor.filter(ALL_CAPS[0], ALL_CAPS[1], MINIMUM_VOLUME, MINIMUM_PRICE, MAXIMUM_PRICE, sectors=sectors)
     elif market_cap == 'small':
@@ -15,12 +19,15 @@ def choose_stocks(sectors=None, market_cap=None):
     else:
         raise ValueError("The market cap parameter provided is wrong")
 
-    for sector, ratios in stocks:
-        ratios.liquidity_test()
-        ratios.leverage_test()
-        ratios.efficiency_test()
-        ratios.profitability_test()
-        ratios.market_value_test()
+    for ratios in stocks.values():
+        # ratios.liquidity_test()
+        # ratios.leverage_test()
+        # ratios.efficiency_test()
+        # ratios.profitability_test()
+        # ratios.market_value_test()
+        result = ratios.growth_rate_test()
+        print(result)
 
 
-choose_stocks()
+if __name__ == '__main__':
+    choose_stocks()
