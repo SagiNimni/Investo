@@ -30,7 +30,7 @@ class GrowthRatios:
     def plot(self):
         df = pd.concat([self.eps, self.roic, self.sgr, self.bvps, self.fcf], axis=1).iloc[::-1]
         df.columns = ['EPS', 'ROIC', 'SGR', 'BVPS', 'FCF']
-        df.index = ['2018', '2019', '2020', '2021', '2022']
+        # df.index = ['2018', '2019', '2020', '2021', '2022']
         df.plot(xlabel='Year', kind='bar', figsize=(9, 8))
         plt.show()
 
@@ -108,10 +108,11 @@ class MarketValueRatios:
         return test(MarketValueRatios)
 
 
+# TODO Add all values for each sector for benchmarking purposes
 # Sectors
 class Sector:
 
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
+    def __init__(self, ratios, growth, key_metrics):
         """
 
 
@@ -119,19 +120,33 @@ class Sector:
         """
         self.GROWTH_CONSTANTS = GrowthRatios(10, 10, 10, 10, 10)
 
-        self.liquidity = LiquidityRatios(ratios['currentRatio'], ratios['quickRatio'], ratios['cashRatio'])
-        self.leverage = LeverageRatios(ratios['debtRatio'], ratios['debtEquityRatio'], ratios['interestCoverage'])
-        self.efficiency = EfficiencyRatios(ratios['daysOfInventoryOutstanding']*365, ratios['daysOfInventoryOutstanding'],
-                          ratios['assetTurnover'], ratios['daysOfPayablesOutstanding'], ratios['receivablesTurnover'])
-        self.profitability = ProfitabilityRatios(ratios['grossProfitMargin'], ratios['operatingProfitMargin'], ratios['returnOnAssets'],
-                             ratios['returnOnEquity'])
-        self.value = MarketValueRatios(ratios['priceEarningsRatio'], ratios['dividendYield'])
+        self.liquidity = LiquidityRatios(ratios['currentRatio'],
+                                         ratios['quickRatio'],
+                                         ratios['cashRatio'])
 
-        roic = (cash_flow['netIncome'] - cash_flow['dividendsPaid']) / \
-               (balance_sheet['totalEquity'] + balance_sheet['totalLiabilities']) * 100
-        sales_growth = (income_statement['revenue'].iloc[::-1]).diff() / income_statement['revenue'] * 100
-        eps = (cash_flow['netIncome'] - cash_flow['dividendsPaid']) / info['sharesOutstanding']
-        self.growth = GrowthRatios(roic, sales_growth, eps, ratios['priceToBookRatio'], ratios['freeCashFlowPerShare'])
+        self.leverage = LeverageRatios(ratios['debtRatio'],
+                                       ratios['debtEquityRatio'],
+                                       ratios['interestCoverage'])
+
+        self.efficiency = EfficiencyRatios(ratios['daysOfInventoryOutstanding']*365,
+                                           ratios['daysOfInventoryOutstanding'],
+                                           ratios['assetTurnover'],
+                                           ratios['daysOfPayablesOutstanding'],
+                                           ratios['receivablesTurnover'])
+
+        self.profitability = ProfitabilityRatios(ratios['grossProfitMargin'],
+                                                 ratios['operatingProfitMargin'],
+                                                 ratios['returnOnAssets'],
+                                                 ratios['returnOnEquity'])
+
+        self.value = MarketValueRatios(ratios['priceEarningsRatio'],
+                                       ratios['dividendYield'])
+
+        self.growth = GrowthRatios(key_metrics['roic'] * 100,
+                                   growth['revenueGrowth'] * 100,
+                                   growth['epsgrowth'] * 100,
+                                   growth['bookValueperShareGrowth'] * 100,
+                                   growth['freeCashFlowGrowth'] * 100)
 
     def liquidity_test(self):
         return self.liquidity.__ge__(self.LIQUIDITY_CONSTANTS)
@@ -148,128 +163,128 @@ class Sector:
     def market_value_test(self):
         return self.value.__ge__(self.VALUE_CONSTANTS)
 
-    def growth_rate_test(self):
-        self.growth.plot()
-        result = self.growth.__ge__(self.GROWTH_CONSTANTS)
-        print(result)
+    def growth_rate_test(self, plot=False):
+        if plot:
+            self.growth.plot()
+        return self.growth.__ge__(self.GROWTH_CONSTANTS)
 
 
 class Energy(Sector):
 
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Energy, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class BasicMaterials(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(BasicMaterials, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class Industrials(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Industrials, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class Utilities(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Utilities, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class Healthcare(Sector):
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Healthcare, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class FinancialServices(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(FinancialServices, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class ConsumerCyclical(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(ConsumerCyclical, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class Technology(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Technology, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class RealEstate(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(RealEstate, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
-
-
-class CommunicationServices(Sector):
-
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
+    def __init__(self, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(CommunicationServices, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
+        super(Energy, self).__init__(ratios, growth, key_metrics)
+
+
+class BasicMaterials(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(BasicMaterials, self).__init__(ratios, growth, key_metrics)
+
+
+class Industrials(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(Industrials, self).__init__(ratios, growth, key_metrics)
+
+
+class Utilities(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(Utilities, self).__init__(ratios, growth, key_metrics)
+
+
+class Healthcare(Sector):
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(Healthcare, self).__init__(ratios, growth, key_metrics)
+
+
+class FinancialServices(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(FinancialServices, self).__init__(ratios, growth, key_metrics)
+
+
+class ConsumerCyclical(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(ConsumerCyclical, self).__init__(ratios, growth, key_metrics)
+
+
+class Technology(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(Technology, self).__init__(ratios, growth, key_metrics)
+
+
+class RealEstate(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(RealEstate, self).__init__(ratios, growth, key_metrics)
+
+
+class CommunicationServices(Sector):
+
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(CommunicationServices, self).__init__(ratios, growth, key_metrics)
 
 
 class ConsumerDefensive(Sector):
 
-    def __init__(self, ratios, balance_sheet, cash_flow, income_statement, info):
-        self.LIQUIDITY_CONSTANTS = LiquidityRatios()
-        self.LEVERAGE_CONSTANTS = LeverageRatios()
-        self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
-        self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
-        self.VALUE_CONSTANTS = MarketValueRatios()
-        super(ConsumerDefensive, self).__init__(ratios, balance_sheet, cash_flow, income_statement, info)
+    def __init__(self, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(ConsumerDefensive, self).__init__(ratios, growth, key_metrics)
 
