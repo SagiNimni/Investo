@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import date
 import matplotlib.pyplot as plt
 
 
@@ -27,11 +28,11 @@ class GrowthRatios:
 
         return test(GrowthRatios, self, other)
 
-    def plot(self):
+    def plot(self, name):
         df = pd.concat([self.eps, self.roic, self.sgr, self.bvps, self.fcf], axis=1).iloc[::-1]
         df.columns = ['EPS', 'ROIC', 'SGR', 'BVPS', 'FCF']
-        # df.index = ['2018', '2019', '2020', '2021', '2022']
-        df.plot(xlabel='Year', kind='bar', figsize=(9, 8))
+        df.index = list(range(date.today().year - df.shape[0], date.today().year))
+        df.plot(title=name, label='Year', kind='bar', figsize=(9, 8))
         plt.show()
 
 
@@ -112,12 +113,14 @@ class MarketValueRatios:
 # Sectors
 class Sector:
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         """
 
 
         :param ratios: a dict of all ratios for the company
         """
+        self.name = name
+
         self.GROWTH_CONSTANTS = GrowthRatios(10, 10, 10, 10, 10)
 
         self.liquidity = LiquidityRatios(ratios['currentRatio'],
@@ -163,128 +166,139 @@ class Sector:
     def market_value_test(self):
         return self.value.__ge__(self.VALUE_CONSTANTS)
 
-    def growth_rate_test(self, plot=False):
+    def growth_rate_test(self, plot: bool):
         if plot:
-            self.growth.plot()
+            self.growth.plot(self.name)
         return self.growth.__ge__(self.GROWTH_CONSTANTS)
 
 
 class Energy(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Energy, self).__init__(ratios, growth, key_metrics)
+        super(Energy, self).__init__(name, ratios, growth, key_metrics)
 
 
 class BasicMaterials(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(BasicMaterials, self).__init__(ratios, growth, key_metrics)
+        super(BasicMaterials, self).__init__(name, ratios, growth, key_metrics)
 
 
 class Industrials(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Industrials, self).__init__(ratios, growth, key_metrics)
+        super(Industrials, self).__init__(name, ratios, growth, key_metrics)
 
 
 class Utilities(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Utilities, self).__init__(ratios, growth, key_metrics)
+        super(Utilities, self).__init__(name, ratios, growth, key_metrics)
 
 
 class Healthcare(Sector):
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Healthcare, self).__init__(ratios, growth, key_metrics)
+        super(Healthcare, self).__init__(name, ratios, growth, key_metrics)
 
 
 class FinancialServices(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(FinancialServices, self).__init__(ratios, growth, key_metrics)
+        super(FinancialServices, self).__init__(name, ratios, growth, key_metrics)
 
 
 class ConsumerCyclical(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(ConsumerCyclical, self).__init__(ratios, growth, key_metrics)
+        super(ConsumerCyclical, self).__init__(name, ratios, growth, key_metrics)
 
 
 class Technology(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(Technology, self).__init__(ratios, growth, key_metrics)
+        super(Technology, self).__init__(name, ratios, growth, key_metrics)
 
 
 class RealEstate(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(RealEstate, self).__init__(ratios, growth, key_metrics)
+        super(RealEstate, self).__init__(name, ratios, growth, key_metrics)
 
 
 class CommunicationServices(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(CommunicationServices, self).__init__(ratios, growth, key_metrics)
+        super(CommunicationServices, self).__init__(name, ratios, growth, key_metrics)
 
 
 class ConsumerDefensive(Sector):
 
-    def __init__(self, ratios, growth, key_metrics):
+    def __init__(self, name, ratios, growth, key_metrics):
         # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
         # self.LEVERAGE_CONSTANTS = LeverageRatios()
         # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
         # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
         # self.VALUE_CONSTANTS = MarketValueRatios()
-        super(ConsumerDefensive, self).__init__(ratios, growth, key_metrics)
+        super(ConsumerDefensive, self).__init__(name, ratios, growth, key_metrics)
+
+
+class Undefined(Sector):
+
+    def __init__(self, name, ratios, growth, key_metrics):
+        # self.LIQUIDITY_CONSTANTS = LiquidityRatios()
+        # self.LEVERAGE_CONSTANTS = LeverageRatios()
+        # self.EFFICIENCY_CONSTANTS = EfficiencyRatios()
+        # self.PROFITABILITY_CONSTANTS = ProfitabilityRatios()
+        # self.VALUE_CONSTANTS = MarketValueRatios()
+        super(Undefined, self).__init__(name, ratios, growth, key_metrics)
 

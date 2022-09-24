@@ -1,22 +1,32 @@
 # Libraries
 from termcolor import colored
+from functools import reduce
 from tqdm import tqdm
+import math
 import time
+import os
+import psutil
 
 from MarketAnalyzer.StocksFilter.Sectors import *
 import requests
 import pandas as pd
+import threading
+import pickle
 
 
 class Extractor(object):
+
+    # Exceptions
+    class SavingError(Exception):
+        pass
 
     # Constants
     API_KEY = "c161a4324922676fd4d6c88bd2f2428c"
     FMP_API = "https://financialmodelingprep.com/api/v3"
 
     # Methods
-    def __init__(self, years, min_market_cap: int, max_market_cap: int, min_volume: int, max_volume: float,
-                     min_price: int, max_price: int, sectors: None, limit=100, warnings=False):
+    def __init__(self, min_market_cap, max_market_cap, min_volume, max_volume,
+                 min_price, max_price, sectors=None, limit=100):
         """
         The constructor takes a list of stocks (provided by the user in a text file) extracts a dict of important
         financial ratios for each company within the provided list
@@ -24,7 +34,6 @@ class Extractor(object):
         :param companies_list: A path to a text file that contains the stocks list
         :param limit: the amount of years to analyze in the reports
         """
-
         self.financial_ratios = {}
 
         parameters = f"marketCapMoreThan={min_market_cap}&marketCapLowerThan={max_market_cap}&" \
@@ -41,58 +50,90 @@ class Extractor(object):
             companies += (requests.get(
                 f"{Extractor.FMP_API}/stock-screener?{parameters}&apikey={Extractor.API_KEY}").json())
 
-        companies = list(map(lambda c: (c['symbol'], c['sector']), companies))
+        self.companies = list(map(lambda c: (c['symbol'], c['sector']), companies))
 
+    def extract(self, years, batch_size=100, warnings=False):
+        global extracted_ratios_list, memory_usage
+        extracted_ratios_list = {}
+        memory_usage = []
+
+        def worker(companies):
+            global extracted_ratios_list, memory_usage
+
+            memory_usage.append(psutil.Process(os.getpid()).memory_info().rss / 1000000)
+
+            for company, sector in companies:
+                try:
+                    if sector == '':
+                        sector = 'Undefined'
+                    ratios = requests.get(f'{Extractor.FMP_API}/ratios/{company}?limit={years}'
+                                          f'&apikey={Extractor.API_KEY}').json()
+                    ratios = pd.DataFrame.from_dict(ratios)
+                    if ratios.empty:
+                        continue
+
+                    growth = requests.get(f'{Extractor.FMP_API}/financial-growth/{company}'
+                                          f'?limit={years}&apikey={Extractor.API_KEY}').json()
+                    growth = pd.DataFrame.from_dict(growth)
+                    if growth.empty:
+                        continue
+
+                    metrics = requests.get(f'{Extractor.FMP_API}/key-metrics/{company}'
+                                           f'?limit={years}&apikey={Extractor.API_KEY}').json()
+                    metrics = pd.DataFrame.from_dict(metrics)
+                    if metrics.empty:
+                        continue
+
+                    ratios_analyzer = eval(f"{sector.replace(' ', '')}(company, ratios, growth, metrics)")
+
+                    extracted_ratios_list.update({company: ratios_analyzer})
+
+                except Exception as e:
+                    if warnings:
+                        time.sleep(0.1)
+                        print(colored("\n========================", 'yellow'))
+                        print(colored('Warning!', 'yellow'))
+                        print(colored(f'Failed to obtain data for {company} company ', 'yellow'))
+                        print(e)
+                        print(colored("========================", 'yellow'))
+                        time.sleep(0.1)
+
+        print("=============================")
         print("Obtaining Financial Data...")
         time.sleep(0.1)
-        for company, sector in tqdm(companies, colour='white'):
-            try:
-                ratios = requests.get(f'{Extractor.FMP_API}/ratios/{company}?limit={years}'
-                                      f'&apikey={Extractor.API_KEY}').json()
-                ratios = pd.DataFrame.from_dict(ratios)
-                if ratios.empty:
-                    continue
 
-                growth = requests.get(f'{Extractor.FMP_API}/financial-growth/{company}'
-                                      f'?limit={years}&apikey={Extractor.API_KEY}').json()
-                growth = pd.DataFrame.from_dict(growth)
-                if growth.empty:
-                    continue
+        # Start each slave to work on separate batch
+        start_time = time.time()
+        batch_pointer = 0
+        slaves = []
+        for _ in range(math.ceil(len(self.companies)/batch_size)):
+            slave = threading.Thread(target=worker, args=(self.companies[batch_pointer:batch_pointer+batch_size], ))
+            slaves.append(slave)
+            slave.start()
+            batch_pointer += batch_size
 
-                metrics = requests.get(f'{Extractor.FMP_API}/key-metrics/{company}'
-                                       f'?limit={years}&apikey={Extractor.API_KEY}').json()
-                metrics = pd.DataFrame.from_dict(metrics)
-                if metrics.empty:
-                    continue
+        # Wait until all slaves are finished
+        for slave in tqdm(slaves, colour='white'):
+            slave.join()
 
-                ratios_analyzer = eval(f"{sector.replace(' ', '')}(ratios, growth, metrics)")
-
-                self.financial_ratios.update({company: ratios_analyzer})
-
-            except Exception as e:
-                if warnings:
-                    print(colored("\n========================", 'yellow'))
-                    print(colored('Warning!', 'yellow'))
-                    print(colored(f'Failed to obtain data for {company} company ', 'yellow'))
-                    print(colored("========================", 'yellow'))
+        memory_usage = reduce(lambda a, b: a + b, memory_usage) / len(memory_usage)
+        self.financial_ratios = extracted_ratios_list
 
         time.sleep(0.1)
+        print("Finished in " + str(time.time() - start_time) +' Seconds')
+        print('RAM Usage: ' + str(memory_usage) + 'MB')
         print("Data Fetch Completed")
+        print("=============================")
 
-    def execute_analyze(self):
-        print("Starts Analysis...")
-        time.sleep(0.1)
-        chosen_companies = []
-        for company, ratios in tqdm(self.financial_ratios.items(), colour='white'):
-            # ratios.liquidity_test()
-            # ratios.leverage_test()
-            # ratios.efficiency_test()
-            # ratios.profitability_test()
-            # ratios.market_value_test()
-            growth_test = ratios.growth_rate_test(plot=True)
-            if all(value.all() for value in growth_test.values()):
-                chosen_companies.append(company)
+    def save(self, file_name):
+        try:
+            with open(file_name, 'wb') as f:
+                pickle.dump(self.financial_ratios, f)
+        except Exception as e:
+            raise Extractor.SavingError('Failed to save data')
 
-        time.sleep(0.1)
-        print("Analyze Completed")
-        return chosen_companies
+    @staticmethod
+    def load(filename):
+        with open(filename, 'rb') as f:
+            data = pickle.load(f)
+            return data
