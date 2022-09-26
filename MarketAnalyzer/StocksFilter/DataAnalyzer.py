@@ -3,6 +3,13 @@ import time
 
 
 def execute_analyze(financial_ratios, plot=False):
+    """
+
+    :param financial_ratios:
+    :param plot:
+    :return:
+    """
+
     print("=============================")
     print("Starts Analysis...")
     time.sleep(0.1)
@@ -16,8 +23,8 @@ def execute_analyze(financial_ratios, plot=False):
             # ratios.market_value_test()
             growth_test = ratios.growth_rate_test(plot)
 
-            if all(value[3] for value in growth_test.values()):
-                chosen_companies.append(company)
+            if all(list(growth_test.values())):
+                chosen_companies.append((company, ratios.growth.concatenate_ratios_average()))
 
         except KeyError:
             continue
@@ -26,4 +33,3 @@ def execute_analyze(financial_ratios, plot=False):
     print("Analyze Completed")
     print("=============================")
     return chosen_companies
-

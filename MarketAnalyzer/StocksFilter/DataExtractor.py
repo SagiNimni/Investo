@@ -20,6 +20,9 @@ class Extractor(object):
     class SavingError(Exception):
         pass
 
+    class LoadingError(Exception):
+        pass
+
     # Constants
     API_KEY = "c161a4324922676fd4d6c88bd2f2428c"
     FMP_API = "https://financialmodelingprep.com/api/v3"
@@ -28,12 +31,17 @@ class Extractor(object):
     def __init__(self, min_market_cap, max_market_cap, min_volume, max_volume,
                  min_price, max_price, sectors=None, limit=100):
         """
-        The constructor takes a list of stocks (provided by the user in a text file) extracts a dict of important
-        financial ratios for each company within the provided list
 
-        :param companies_list: A path to a text file that contains the stocks list
-        :param limit: the amount of years to analyze in the reports
+        :param min_market_cap:
+        :param max_market_cap:
+        :param min_volume:
+        :param max_volume:
+        :param min_price:
+        :param max_price:
+        :param sectors:
+        :param limit:
         """
+
         self.financial_ratios = {}
 
         parameters = f"marketCapMoreThan={min_market_cap}&marketCapLowerThan={max_market_cap}&" \
@@ -53,6 +61,14 @@ class Extractor(object):
         self.companies = list(map(lambda c: (c['symbol'], c['sector']), companies))
 
     def extract(self, years, batch_size=100, warnings=False):
+        """
+
+        :param years:
+        :param batch_size:
+        :param warnings:
+        :return:
+        """
+
         global extracted_ratios_list, memory_usage
         extracted_ratios_list = {}
         memory_usage = []
@@ -126,6 +142,12 @@ class Extractor(object):
         print("=============================")
 
     def save(self, file_name):
+        """
+
+        :param file_name:
+        :return:
+        """
+
         try:
             with open(file_name, 'wb') as f:
                 pickle.dump(self.financial_ratios, f)
@@ -134,6 +156,14 @@ class Extractor(object):
 
     @staticmethod
     def load(filename):
-        with open(filename, 'rb') as f:
-            data = pickle.load(f)
-            return data
+        """
+
+        :param filename:
+        :return:
+        """
+        try:
+            with open(filename, 'rb') as f:
+                data = pickle.load(f)
+                return data
+        except Exception as e:
+            raise Extractor.LoadingError("Couldn't load objects from the pickle file")

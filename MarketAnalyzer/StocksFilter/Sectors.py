@@ -4,16 +4,34 @@ import matplotlib.pyplot as plt
 
 
 # Ratios
-def test(class_name: type, self, other):
-    tests = {}
+class Ratios:
 
-    for var in class_name.__init__.__code__.co_varnames[1:]:
-        tests.update({var: (eval(f'self.{var}>=other.{var}'))})
+    def test_each_year(self, constants):
+        tests = {}
 
-    return tests
+        for var in type(self).__init__.__code__.co_varnames[1:]:
+            tests.update({var: (eval(f'self.{var}>=constants.{var}'))})
+
+        return tests
+
+    def test_average(self, constants):
+        tests = {}
+
+        for var in type(self).__init__.__code__.co_varnames[1:]:
+            tests.update({var: (eval(f'self.{var}.mean()>=constants.{var}'))})
+
+        return tests
+
+    def concatenate_ratios_average(self) -> pd.Series:
+        series = []
+
+        for var in type(self).__init__.__code__.co_varnames[1:]:
+            series.append(eval(f'self.{var}'))
+
+        return pd.concat(series, axis=1).mean()
 
 
-class GrowthRatios:
+class GrowthRatios(Ratios):
 
     def __init__(self, roic, sgr, eps, bvps, fcf):
         self.roic = roic
@@ -22,11 +40,11 @@ class GrowthRatios:
         self.bvps = bvps
         self.fcf = fcf
 
-    def __ge__(self, other):
-        if not isinstance(other, GrowthRatios):
+    def compare_to_constants(self, constants):
+        if not isinstance(constants, GrowthRatios):
             return NotImplemented
 
-        return test(GrowthRatios, self, other)
+        return self.test_average(constants)
 
     def plot(self, name):
         df = pd.concat([self.eps, self.roic, self.sgr, self.bvps, self.fcf], axis=1).iloc[::-1]
@@ -36,7 +54,7 @@ class GrowthRatios:
         plt.show()
 
 
-class LiquidityRatios:
+class LiquidityRatios(Ratios):
 
     def __init__(self, current_ratio, quick_ratio, cash_ratio):
         self.current_ratio = current_ratio
@@ -47,10 +65,10 @@ class LiquidityRatios:
         if not isinstance(other, LiquidityRatios):
             return NotImplemented
 
-        return test(LiquidityRatios)
+        return self.test_each_year(LiquidityRatios)
 
 
-class LeverageRatios:
+class LeverageRatios(Ratios):
 
     def __init__(self, debt_ratio, debt_to_equity_ratio, interest_coverage_ratio):
         self.debt_ratio = debt_ratio
@@ -61,10 +79,10 @@ class LeverageRatios:
         if not isinstance(other, LeverageRatios):
             return NotImplemented
 
-        return test(LeverageRatios)
+        return self.test_each_year(LeverageRatios)
 
 
-class EfficiencyRatios:
+class EfficiencyRatios(Ratios):
 
     def __init__(self, inventory_turnover, days_sales_in_inventory, assets_turnover,
                  days_payables_outstanding, receivables_turnover):
@@ -78,10 +96,10 @@ class EfficiencyRatios:
         if not isinstance(other, EfficiencyRatios):
             return NotImplemented
 
-        return test(EfficiencyRatios)
+        return self.test_each_year(EfficiencyRatios)
 
 
-class ProfitabilityRatios:
+class ProfitabilityRatios(Ratios):
 
     def __init__(self, gross_margin, operating_margin, return_on_assets, return_on_equity):
         self.gross_margin = gross_margin
@@ -93,10 +111,10 @@ class ProfitabilityRatios:
         if not isinstance(other, ProfitabilityRatios):
             return NotImplemented
 
-        return test(ProfitabilityRatios)
+        return self.test_each_year(ProfitabilityRatios)
 
 
-class MarketValueRatios:
+class MarketValueRatios(Ratios):
 
     def __init__(self, price_earning: pd.Series, dividend_yield: pd.Series):
         self.price_earning = price_earning
@@ -106,12 +124,14 @@ class MarketValueRatios:
         if not isinstance(other, MarketValueRatios):
             return NotImplemented
 
-        return test(MarketValueRatios)
+        return self.test_each_year(MarketValueRatios)
 
 
 # TODO Add all values for each sector for benchmarking purposes
 # Sectors
 class Sector:
+
+    GROWTH_CONSTANTS = GrowthRatios(10, 10, 10, 10, 10)
 
     def __init__(self, name, ratios, growth, key_metrics):
         """
@@ -119,9 +139,8 @@ class Sector:
 
         :param ratios: a dict of all ratios for the company
         """
-        self.name = name
 
-        self.GROWTH_CONSTANTS = GrowthRatios(10, 10, 10, 10, 10)
+        self.name = name
 
         self.liquidity = LiquidityRatios(ratios['currentRatio'],
                                          ratios['quickRatio'],
@@ -169,7 +188,7 @@ class Sector:
     def growth_rate_test(self, plot: bool):
         if plot:
             self.growth.plot(self.name)
-        return self.growth.__ge__(self.GROWTH_CONSTANTS)
+        return self.growth.compare_to_constants(Sector.GROWTH_CONSTANTS)
 
 
 class Energy(Sector):
