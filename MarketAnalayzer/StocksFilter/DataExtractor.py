@@ -7,7 +7,7 @@ import time
 import os
 import psutil
 
-from MarketAnalyzer.StocksFilter.Sectors import *
+from MarketAnalayzer.StocksFilter.Sectors import *
 import requests
 import pandas as pd
 import threading

@@ -1,3 +1,4 @@
+from MarketAnalayzer.StocksFilter.constants import *
 import pandas as pd
 from datetime import date
 import matplotlib.pyplot as plt
@@ -6,27 +7,27 @@ import matplotlib.pyplot as plt
 # Ratios
 class Ratios:
 
-    def test_each_year(self, constants):
+    def test_each_year(self, constants, max_years=''):
         tests = {}
 
         for var in type(self).__init__.__code__.co_varnames[1:]:
-            tests.update({var: (eval(f'self.{var}>=constants.{var}'))})
+            tests.update({var: (eval(f'self.{var}[:{max_years}]>=constants.{var}'))})
 
         return tests
 
-    def test_average(self, constants):
+    def test_average(self, constants, max_years=''):
         tests = {}
 
         for var in type(self).__init__.__code__.co_varnames[1:]:
-            tests.update({var: (eval(f'self.{var}.mean()>=constants.{var}'))})
+            tests.update({var: (eval(f'self.{var}[:{max_years}].mean()>=constants.{var}'))})
 
         return tests
 
-    def concatenate_ratios_average(self) -> pd.Series:
+    def concatenate_ratios_average(self, max_years) -> pd.Series:
         series = []
 
         for var in type(self).__init__.__code__.co_varnames[1:]:
-            series.append(eval(f'self.{var}'))
+            series.append(eval(f'self.{var}[:{max_years}]'))
 
         return pd.concat(series, axis=1).mean()
 
@@ -40,11 +41,11 @@ class GrowthRatios(Ratios):
         self.bvps = bvps
         self.fcf = fcf
 
-    def compare_to_constants(self, constants):
+    def compare_to_constants(self, constants, max_years):
         if not isinstance(constants, GrowthRatios):
             return NotImplemented
 
-        return self.test_average(constants)
+        return self.test_average(constants, max_years=max_years)
 
     def plot(self, name):
         df = pd.concat([self.eps, self.roic, self.sgr, self.bvps, self.fcf], axis=1).iloc[::-1]
@@ -131,7 +132,8 @@ class MarketValueRatios(Ratios):
 # Sectors
 class Sector:
 
-    GROWTH_CONSTANTS = GrowthRatios(10, 10, 10, 10, 10)
+    GROWTH_CONSTANTS = GrowthRatios(RETURN_ON_INVESTED_CAPITAL, SALES_GROWTH,
+                                    EARNING_PER_SHARE_GROWTH, BOOK_VALUE_PER_SHARE_GROWTH, FREE_CASH_FLOW_GROWTH)
 
     def __init__(self, name, ratios, growth, key_metrics):
         """
@@ -185,10 +187,10 @@ class Sector:
     def market_value_test(self):
         return self.value.__ge__(self.VALUE_CONSTANTS)
 
-    def growth_rate_test(self, plot: bool):
+    def growth_rate_test(self, max_years, plot: bool):
         if plot:
             self.growth.plot(self.name)
-        return self.growth.compare_to_constants(Sector.GROWTH_CONSTANTS)
+        return self.growth.compare_to_constants(Sector.GROWTH_CONSTANTS, max_years=max_years)
 
 
 class Energy(Sector):
