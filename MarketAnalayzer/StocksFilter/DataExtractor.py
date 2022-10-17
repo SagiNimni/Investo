@@ -25,7 +25,8 @@ class Extractor(object):
 
     # Constants
     API_KEY = "c161a4324922676fd4d6c88bd2f2428c"
-    FMP_API = "https://financialmodelingprep.com/api/v3"
+    FMP_API_V3 = "https://financialmodelingprep.com/api/v3"
+    FMP_API_V4 = "https://financialmodelingprep.com/api/v4"
 
     # Methods
     def __init__(self, min_market_cap, max_market_cap, min_volume, max_volume,
@@ -52,11 +53,11 @@ class Extractor(object):
         companies = []
         if sectors is not None:
             for sector in sectors:
-                companies += (requests.get(f"{Extractor.FMP_API}/stock-screener?{parameters}&sector={sector}"
+                companies += (requests.get(f"{Extractor.FMP_API_V3}/stock-screener?{parameters}&sector={sector}"
                                            f"&apikey={Extractor.API_KEY}").json())
         else:
             companies += (requests.get(
-                f"{Extractor.FMP_API}/stock-screener?{parameters}&apikey={Extractor.API_KEY}").json())
+                f"{Extractor.FMP_API_V3}/stock-screener?{parameters}&apikey={Extractor.API_KEY}").json())
 
         self.companies = list(map(lambda c: (c['symbol'], c['sector']), companies))
 
@@ -82,25 +83,31 @@ class Extractor(object):
                 try:
                     if sector == '':
                         sector = 'Undefined'
-                    ratios = requests.get(f'{Extractor.FMP_API}/ratios/{company}?limit={years}'
+                    ratios = requests.get(f'{Extractor.FMP_API_V3}/ratios/{company}?limit={years}'
                                           f'&apikey={Extractor.API_KEY}').json()
                     ratios = pd.DataFrame.from_dict(ratios)
                     if ratios.empty:
                         continue
 
-                    growth = requests.get(f'{Extractor.FMP_API}/financial-growth/{company}'
+                    growth = requests.get(f'{Extractor.FMP_API_V3}/financial-growth/{company}'
                                           f'?limit={years}&apikey={Extractor.API_KEY}').json()
                     growth = pd.DataFrame.from_dict(growth)
                     if growth.empty:
                         continue
 
-                    metrics = requests.get(f'{Extractor.FMP_API}/key-metrics/{company}'
+                    metrics = requests.get(f'{Extractor.FMP_API_V3}/key-metrics/{company}'
                                            f'?limit={years}&apikey={Extractor.API_KEY}').json()
                     metrics = pd.DataFrame.from_dict(metrics)
                     if metrics.empty:
                         continue
 
-                    ratios_analyzer = eval(f"{sector.replace(' ', '')}(company, ratios, growth, metrics)")
+                    core_info = requests.get(f'{Extractor.FMP_API_V4}/company-core-information?symbol={company}&apikey={Extractor.API_KEY}').json()
+                    if core_info:
+                        sic_code = pd.DataFrame.from_dict(core_info)['sicCode'][0][:2]
+                    else:
+                        sic_code = '00'
+
+                    ratios_analyzer = eval(f"{sector.replace(' ', '')}(company, ratios, growth, metrics, sic_code)")
 
                     extracted_ratios_list.update({company: ratios_analyzer})
 
@@ -136,7 +143,7 @@ class Extractor(object):
         self.financial_ratios = extracted_ratios_list
 
         time.sleep(0.1)
-        print("Finished in " + str(time.time() - start_time) +' Seconds')
+        print("Finished in " + str(time.time() - start_time) + ' Seconds')
         print('RAM Usage: ' + str(memory_usage) + 'MB')
         print("Data Fetch Completed")
         print("=============================")

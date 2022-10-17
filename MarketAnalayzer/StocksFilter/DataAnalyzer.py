@@ -18,9 +18,10 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
     print("Starts Analysis...")
     time.sleep(0.1)
     chosen_companies = []
+
     for company, ratios in tqdm(financial_ratios.items(), colour='white'):
         try:
-            # ratios.liquidity_test()
+            liquidity_grades = ratios.liquidity_test()
             # ratios.leverage_test()
             # ratios.efficiency_test()
             # ratios.profitability_test()
@@ -29,7 +30,6 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
 
             if all(list(growth_test.values())):
                 chosen_companies.append((company, ratios.growth.concatenate_ratios_average(max_years)))
-
         except KeyError:
             continue
 
