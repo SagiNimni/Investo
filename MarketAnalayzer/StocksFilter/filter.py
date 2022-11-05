@@ -3,9 +3,6 @@ from MarketAnalayzer.StocksFilter.constants import BasicMarketConstants as Const
 from MarketAnalayzer.StocksFilter.DataAnalyzer import *
 
 
-# TODO add benchmaarking conatants to the constanst file
-# TODO relate consatnts to Sectors
-
 def choose_stocks(file_name, years_back, amount_of_stocks=1000, extract_market_cap='all', sectors=None, extract=True,
                   extraction_speed='fast', logs=True):
 

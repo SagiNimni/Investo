@@ -2,16 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b51069f-9f5b-4806-b26a-00632e650b34" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/IndustryBenchmarks/ObtainData.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/nimni.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/nimni.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataAnalyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataAnalyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataExtractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataExtractor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/Sectors.py" beforeDir="false" afterPath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/Sectors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/filter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,16 +18,18 @@
     <session id="742662352">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="6" />
+          <entry key="project.closed" value="9" />
           <entry key="project.open.time.15" value="1" />
           <entry key="project.open.time.18" value="3" />
           <entry key="project.open.time.19" value="2" />
-          <entry key="project.open.time.20" value="1" />
-          <entry key="project.open.time.22" value="2" />
+          <entry key="project.open.time.20" value="2" />
+          <entry key="project.open.time.21" value="1" />
+          <entry key="project.open.time.22" value="3" />
           <entry key="project.open.time.23" value="1" />
           <entry key="project.open.time.24" value="3" />
           <entry key="project.open.time.60" value="1" />
-          <entry key="project.opened" value="14" />
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.opened" value="18" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -40,7 +37,7 @@
           <entry key="gitignore" value="2" />
           <entry key="json" value="10" />
           <entry key="md" value="12" />
-          <entry key="py" value="70" />
+          <entry key="py" value="76" />
           <entry key="txt" value="9" />
         </counts>
       </usages-collector>
@@ -49,16 +46,16 @@
           <entry key="JSON" value="10" />
           <entry key="Markdown" value="12" />
           <entry key="PLAIN_TEXT" value="11" />
-          <entry key="Python" value="70" />
+          <entry key="Python" value="76" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="5742" />
+          <entry key="Python Console" value="6078" />
           <entry key="dummy" value="23" />
           <entry key="gitignore" value="24" />
           <entry key="md" value="7445" />
-          <entry key="py" value="35622" />
+          <entry key="py" value="39392" />
           <entry key="txt" value="105" />
         </counts>
       </usages-collector>
@@ -66,68 +63,20 @@
         <counts>
           <entry key="Markdown" value="7445" />
           <entry key="PLAIN_TEXT" value="152" />
-          <entry key="Python" value="41364" />
+          <entry key="Python" value="45470" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="153">
+              <caret line="9" column="36" lean-forward="true" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
               <folding>
                 <element signature="e#0#61#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="50" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
-              <folding>
-                <element signature="e#0#64#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataAnalyzer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="22" column="12" lean-forward="true" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
-              <folding>
-                <element signature="e#0#21#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/constants.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="102" selection-start-line="25" selection-start-column="102" selection-end-line="25" selection-end-column="102" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/Sectors.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="20" column="24" lean-forward="true" selection-start-line="20" selection-start-column="24" selection-end-line="20" selection-end-column="24" />
-              <folding>
-                <element signature="e#0#108#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -186,12 +135,12 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/filter.py" />
         <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/IndustryBenchmarks/benchmarks.py" />
-        <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/constants.py" />
         <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataExtractor.py" />
-        <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py" />
         <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/IndustryBenchmarks/ObtainData.py" />
-        <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/Sectors.py" />
+        <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py" />
+        <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/constants.py" />
         <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataAnalyzer.py" />
+        <option value="$PROJECT_DIR$/MarketAnalayzer/StocksFilter/Sectors.py" />
       </list>
     </option>
   </component>
@@ -213,24 +162,6 @@
             <path>
               <item name="Investo" type="b2602c69:ProjectViewProjectNode" />
               <item name="Investo" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Investo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Investo" type="462c0819:PsiDirectoryNode" />
-              <item name="MarketAnalayzer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Investo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Investo" type="462c0819:PsiDirectoryNode" />
-              <item name="MarketAnalayzer" type="462c0819:PsiDirectoryNode" />
-              <item name="StocksFilter" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Investo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Investo" type="462c0819:PsiDirectoryNode" />
-              <item name="MarketAnalayzer" type="462c0819:PsiDirectoryNode" />
-              <item name="StocksFilter" type="462c0819:PsiDirectoryNode" />
-              <item name="IndustryBenchmarks" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -310,7 +241,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.main1" />
       </list>
     </recent_temporary>
   </component>
@@ -338,23 +268,22 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1459431" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1459431" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3253796" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3253796" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3991323" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.329718" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50052685" side_tool="true" weight="0.329718" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="9" visible="true" weight="0.329718" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.329718" />
       <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49947312" weight="0.329718" />
-      <window_info anchor="bottom" id="Python Console" order="11" sideWeight="0.49947312" weight="0.3264642" />
+      <window_info anchor="bottom" id="Python Console" order="11" sideWeight="0.49947312" visible="true" weight="0.3264642" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -421,60 +350,73 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="results[0].value_counts()[True]" language="Python" />
-        <watch expression="results.value_counts()[True] / results.count() * 100" />
+        <watch expression="{ratio: (values[index] / constants.ratios[ratio])[0]}" />
+        <watch expression="ratio: (values[index]" />
+        <watch expression="grades" />
+        <watch expression="grades.values()" language="Python" />
+        <watch expression="list(chosen_companies.items())" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="watch">
       <expression>
-        <expression-string>results[0].value_counts()[True]</expression-string>
+        <expression-string>list(chosen_companies.items())</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>results.value_counts()[0]</expression-string>
+        <expression-string>grades.values()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>results.value_counts()[0][True]</expression-string>
+        <expression-string>ratios.growth.ratios.mean()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>Sector.BENCHMARKS_PER_SIC</expression-string>
+        <expression-string>ratios.growth.ratios</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>benchmarks.update({})</expression-string>
+        <expression-string>ratios.growth</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>f'{Extractor.FMP_API_V4}/company-core-information?symbol={company}&amp;apikey={Extractor.API_KEY}'</expression-string>
+        <expression-string>values[:max_years] &gt;= Sector.GROWTH_CONSTANTS.ratios[ratio][0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>(os.getcwd() + '/MarketAnalayzer/StocksFilter/IndustryBenchmarks/'.replace('\\', '/')</expression-string>
+        <expression-string>tests.mean()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>list(zip(industries, last_year))</expression-string>
+        <expression-string>values[index]/constants.ratios[ratio]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ratio.string</expression-string>
+        <expression-string>results.value_counts()[True]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>results.value_counts()[False]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>(values[index] &gt;= constants.ratios[ratio])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>constants</expression-string>
         <language-id>Python</language-id>
@@ -665,13 +607,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataExtractor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="108" lean-forward="true" selection-start-line="108" selection-end-line="108" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/pandas/core/generic.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="197">
@@ -695,61 +630,82 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/IndustryBenchmarks/ObtainData.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="36" lean-forward="true" selection-start-line="36" selection-end-line="36" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <marker date="1665997582424" expanded="true" signature="787:788" ph="..." />
-          </folding>
+        <state relative-caret-position="170">
+          <caret line="10" column="48" selection-start-line="10" selection-start-column="48" selection-end-line="10" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/tqdm/std.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="1208" selection-start-line="1208" selection-end-line="1208" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="102" selection-start-line="25" selection-start-column="102" selection-end-line="25" selection-end-column="102" />
+        <state relative-caret-position="170">
+          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+            <marker date="1667037339240" expanded="true" signature="548:560" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/Sectors.py">
+    <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataExtractor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="20" column="24" lean-forward="true" selection-start-line="20" selection-start-column="24" selection-end-line="20" selection-end-column="24" />
+        <state relative-caret-position="17">
+          <caret line="97" column="90" selection-start-line="97" selection-start-column="90" selection-end-line="97" selection-end-column="90" />
           <folding>
-            <element signature="e#0#108#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#0#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="50" selection-start-line="22" selection-start-column="50" selection-end-line="22" selection-end-column="50" />
-          <folding>
-            <element signature="e#0#64#0" expanded="true" />
+            <element signature="e#12#41#0" expanded="true" />
+            <marker date="1665904859986" expanded="true" signature="259:262" ph="..." />
+            <marker date="1665904859986" expanded="true" signature="260:262" ph="..." />
+            <marker date="1665904859986" expanded="true" signature="387:406" ph="..." />
+            <marker date="1665904859986" expanded="true" signature="5639:5832" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/DataAnalyzer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="22" column="12" lean-forward="true" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
+        <state relative-caret-position="1173">
+          <caret line="69" column="27" selection-start-line="69" selection-start-column="11" selection-end-line="69" selection-end-column="27" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
+            <marker date="1667636055499" expanded="true" signature="303:309" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/filter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="539">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
+          <folding>
+            <element signature="e#0#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MarketAnalayzer/StocksFilter/Sectors.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="129" selection-start-line="129" selection-end-line="129" />
+          <folding>
+            <element signature="e#0#108#0" expanded="true" />
+            <marker date="1667636218567" expanded="true" signature="2537:2776" ph="..." />
+            <marker date="1667636218567" expanded="true" signature="8430:8506" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="36" lean-forward="true" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#61#0" expanded="true" />
           </folding>
         </state>
       </provider>

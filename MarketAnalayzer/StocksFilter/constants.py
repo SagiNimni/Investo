@@ -23,4 +23,8 @@ class GrowthRatiosConstants:
     FREE_CASH_FLOW_GROWTH = 10
 
 
+class PriceEarningPerSector:
+    pass
+
+
 BENCHMARKS_PATH = (os.getcwd().replace('\\', '/') + '/MarketAnalayzer/StocksFilter/IndustryBenchmarks/', 'benchmarks')
