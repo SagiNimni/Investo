@@ -1,5 +1,5 @@
-from MarketAnalayzer.StocksFilter.constants import GrowthRatiosConstants as growthConstants, BENCHMARKS_PATH
-from MarketAnalayzer.StocksFilter.IndustryBenchmarks.ObtainData import obtain_data
+from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import GrowthRatiosConstants as growthConstants, BENCHMARKS_PATH
+from InvestoAnalayzers.MarketAnalayzer.StocksFilter.IndustryBenchmarks.ObtainData import obtain_data
 import pandas as pd
 from datetime import date
 import matplotlib.pyplot as plt

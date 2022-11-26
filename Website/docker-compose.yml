@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+    node_server:
+      tty: true
+      container_name: react-frontend
+      build: ./frontend
+      command: npm start
+      environment:
+        REACT_APP_HOST_IP: ${HOST_IP}
+        REACT_APP_HOST_PORT: ${HOST_PORT}
+        CHOKIDAR_USEPOLLING: "true"
+      volumes:
+        - ./frontend:/usr/src/app
+        - '/usr/src/app/node_modules'
+      expose:
+        - ${REACT_PORT}
+      image: no-react
+
+    flask_server:
+      container_name: flask-backend
+      build: ./backend
+      command: flask --app server run
+      expose:
+        - ${FLASK_PORT}
+      volumes:
+      - ./backend:/code
+
+    reverse_proxy:
+      container_name: nginx-proxy
+      build: ./nginx
+      volumes:
+        - ./nginx/templates:/etc/nginx/templates
+      ports:
+        - ${HOST_PORT}:${HOST_PORT}
+      environment:
+        - NGINX_HOST=${HOST_IP}
+        - NGINX_PORT=${HOST_PORT}
+        - REACT_PORT=${REACT_PORT}
+        - FLASK_PORT=${FLASK_PORT}
+      depends_on:
+        - node_server
+        - flask_server

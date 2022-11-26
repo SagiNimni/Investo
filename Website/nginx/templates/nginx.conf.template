@@ -1,0 +1,31 @@
+events {
+  worker_connections 1024;
+}
+
+http {
+
+  upstream react-frontend {
+    server react-frontend:${REACT_PORT};
+  }
+
+  upstream flask-backend {
+    server flask-backend:${FLASK_PORT};
+  }
+
+  server {
+
+    listen ${NGINX_PORT};
+    server_name ${NGINX_HOST};
+
+    location /api {
+      proxy_pass            http://flask-backend;
+      proxy_set_header      X-Forwarded-For $remote_addr;
+    }
+
+    location / {
+      proxy_pass            http://react-frontend;
+      proxy_set_header      X-Forwarded-For $remote_addr;
+    }
+
+  }
+}

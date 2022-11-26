@@ -1,5 +1,5 @@
 import math
-import os
+from pathlib import Path
 
 
 class BasicMarketConstants:
@@ -27,4 +27,4 @@ class PriceEarningPerSector:
     pass
 
 
-BENCHMARKS_PATH = (os.getcwd().replace('\\', '/') + '/MarketAnalayzer/StocksFilter/IndustryBenchmarks/', 'benchmarks')
+BENCHMARKS_PATH = (str(Path(__file__).parent.resolve()).replace('\\', '/') + '/IndustryBenchmarks/', 'benchmarks')
