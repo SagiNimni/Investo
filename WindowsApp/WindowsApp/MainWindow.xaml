@@ -1,0 +1,39 @@
+﻿<Window x:Class="WindowsApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WindowsApp"
+        mc:Ignorable="d"
+        Title="Dashboard" 
+        Width="800" 
+        Height="500" 
+        WindowState="Maximized" >
+
+    <Window.Resources>
+        <ContextMenu x:Key="ListItemContextMenu">
+            <MenuItem Header="Delete List" Click="DeleteClicked"/>
+            <MenuItem Header="Filter List" Click="FilterClicked"/>
+        </ContextMenu>
+
+    </Window.Resources>
+    
+    <Grid Margin="250,100,250,100">
+        <Border CornerRadius="6" BorderBrush="Gray" Background="LightGray" BorderThickness="2" DockPanel.Dock="Top">
+            <StackPanel Name="ListsOfStocks" >
+                <Label HorizontalAlignment="Center" FontSize="20" >Extracted Stocks</Label>
+                <Button x:Name="openExtractWindow" Click="openExtractWindow_Click" Content="Add New List"/>
+                <Expander Height="207">
+                    <ListBox x:Name="stocksLists" ItemsSource="{Binding ListsNames}" FontSize="18">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="ContextMenu" Value="{StaticResource ListItemContextMenu}"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Expander>
+            </StackPanel>
+        </Border>
+    </Grid>
+
+</Window>

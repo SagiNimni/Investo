@@ -1,10 +1,11 @@
-from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import GrowthRatiosConstants as growthConstants, BENCHMARKS_PATH
-from InvestoAnalayzers.MarketAnalayzer.StocksFilter.IndustryBenchmarks.ObtainData import obtain_data
+import time
+
+from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import GrowthRatiosConstants as growthConstants
+from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import BENCHMARKS_FILE_NAME
 import pandas as pd
 from datetime import date
 import matplotlib.pyplot as plt
 import json
-import os
 
 
 # Ratios
@@ -16,7 +17,7 @@ class Ratios:
 
         for ratio, values in self.ratios.items():
             try:
-                tests.update({ratio: (values[index] / constants.ratios[ratio])[0]})
+                tests.update({ratio: (values[0][index] / constants.ratios[ratio])[0]})
 
             except TypeError:
                 continue
@@ -40,7 +41,7 @@ class GrowthRatios(Ratios):
 
         tests = {}
         for ratio, values in self.ratios.items():
-            tests.update({ratio: values[:max_years].mean() >= Sector.GROWTH_CONSTANTS.ratios[ratio][0]})
+            tests.update({ratio: values[0][:max_years].mean() >= Sector.GROWTH_CONSTANTS.ratios[ratio][0]})
 
         return tests
 
@@ -147,17 +148,13 @@ class MarketValueRatios(Ratios):
 
 # Sectors
 class Sector:
-
     GROWTH_CONSTANTS = GrowthRatios(growthConstants.RETURN_ON_INVESTED_CAPITAL,
                                     growthConstants.SALES_GROWTH,
                                     growthConstants.EARNING_PER_SHARE_GROWTH,
                                     growthConstants.BOOK_VALUE_PER_SHARE_GROWTH,
                                     growthConstants.FREE_CASH_FLOW_GROWTH)
 
-    if not os.path.exists(BENCHMARKS_PATH[0] + BENCHMARKS_PATH[1] + '.json'):
-        obtain_data(BENCHMARKS_PATH)
-
-    with open(BENCHMARKS_PATH[0] + BENCHMARKS_PATH[1] + '.json') as f:
+    with open(BENCHMARKS_FILE_NAME + '.json') as f:
         BENCHMARKS_PER_SIC = json.load(f)
 
     def __init__(self, name, ratios, growth, key_metrics, sic):

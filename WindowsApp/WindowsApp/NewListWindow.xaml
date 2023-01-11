@@ -1,0 +1,67 @@
+﻿<Window x:Class="WindowsApp.NewListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WindowsApp"
+        mc:Ignorable="d"
+        Title="Create New Stocks List" 
+        Height="450" 
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Topmost="True">
+    
+    <ScrollViewer>
+        <StackPanel Margin="10">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Label}">
+                    <Setter Property="Margin" Value="0,10,0,0"/>
+                    <Setter Property="FontSize" Value="18"/>
+                </Style>
+            </StackPanel.Resources>
+            <StackPanel>
+                <Label>List's Name:</Label>
+                <TextBox x:Name="ListName"></TextBox>
+            </StackPanel>
+            <StackPanel>
+                <Label>List Size:</Label>
+                <TextBox x:Name="ListSize" PreviewTextInput="ensureNumbersOnlyTextBox"></TextBox>
+            </StackPanel>
+            <StackPanel>
+                <Label>Market Cap:</Label>
+                <ComboBox x:Name="MarketCap">
+                    <ComboBoxItem>Small Caps</ComboBoxItem>
+                    <ComboBoxItem>Medium Caps</ComboBoxItem>
+                    <ComboBoxItem>Large Caps</ComboBoxItem>
+                    <ComboBoxItem>All Caps</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel>
+                <Label>Sectors:</Label>
+                <Expander>
+                    <StackPanel x:Name="Sectors">
+                        <CheckBox IsChecked="True">Energy</CheckBox>
+                        <CheckBox IsChecked="True">Basic Materials</CheckBox>
+                        <CheckBox IsChecked="True">Industrials</CheckBox>
+                        <CheckBox IsChecked="True">Utilities</CheckBox>
+                        <CheckBox IsChecked="True">Healthcare</CheckBox>
+                        <CheckBox IsChecked="True">Financial Services</CheckBox>
+                        <CheckBox IsChecked="True">Consumer Cyclical</CheckBox>
+                        <CheckBox IsChecked="True">Technology</CheckBox>
+                        <CheckBox IsChecked="True">Real Estate</CheckBox>
+                        <CheckBox IsChecked="True">Communication Services</CheckBox>
+                        <CheckBox IsChecked="True">Consumer Defensive</CheckBox>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+            <StackPanel>
+                <Label>How far back:</Label>
+                <TextBox x:Name="YearsBack" PreviewTextInput="ensureNumbersOnlyTextBox"></TextBox>
+            </StackPanel>
+            <Button x:Name="Submit" Margin="20" FontSize="22" Click="Submit_Click">Create New Stocks List</Button>
+        </StackPanel>
+    </ScrollViewer>
+ 
+</Window>
+ 

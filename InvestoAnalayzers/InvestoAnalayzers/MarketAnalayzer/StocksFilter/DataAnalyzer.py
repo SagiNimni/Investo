@@ -41,8 +41,17 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
 
     if plot_result:
         for company, grades in chosen_companies.items():
-            print(company + ':')
+            print(f'{company:.^20}' + ':\n')
+            print('Efficiency Ratios:')
             print(grades['efficiency'], '\n')
+            print('Liquidity Ratios:')
+            print(grades['liquidity'], '\n')
+            print('Leverage Ratios:')
+            print(grades['leverage'], '\n')
+            print('Profitability Ratios:')
+            print(grades['profitability'], '\n')
+            print('Marker Value Ratios:')
+            print(grades['value'], '\n\n')
 
     if save is not None:
         timeout = time.time()

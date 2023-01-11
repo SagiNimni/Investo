@@ -7,7 +7,7 @@ import string
 import os
 
 
-def get_ready_ratios_data(file_path: str, file_name: str):
+def get_ready_ratios_data(file_name: str):
     ready_ratios_url = "https://www.readyratios.com/"
     html = BeautifulSoup(requests.get(ready_ratios_url + 'sec/industry/').text, 'html.parser')
     ratios_list = html.find_all("table")[0].find_all("a")
@@ -18,7 +18,13 @@ def get_ready_ratios_data(file_path: str, file_name: str):
         url_extensions.append((ratio.get('href'), name))
 
     ratios_per_industry = {}
-    writer = pd.ExcelWriter(file_path + file_name + '.xlsx')
+    file_path, file_name = file_name.rsplit('/', 1)
+    try:
+        os.mkdir(file_path)
+    except FileExistsError:
+        pass
+
+    writer = pd.ExcelWriter(file_path + "/" + file_name + '.xlsx')
     for extension, ratio_name in url_extensions:
         benchmarks_dataframe = pd.read_html(ready_ratios_url + extension)[0]
         ratios_per_industry.update({ratio_name: benchmarks_dataframe})
@@ -27,7 +33,7 @@ def get_ready_ratios_data(file_path: str, file_name: str):
     return ratios_per_industry
 
 
-def json_benchmarks(data, file_path: str, file_name: str):
+def json_benchmarks(data, file_name: str):
 
     def percent_to_decimal(number):
         if type(number) == str:
@@ -35,7 +41,7 @@ def json_benchmarks(data, file_path: str, file_name: str):
                 return round(float(number.strip('%')) / 100.0, 3)
         return number
 
-    with open(file_path + file_name + '.json', 'w+') as f:
+    with open(file_name + '.json', 'w+') as f:
         benchmarks = {}
         years = list(data.values())[0]['Year']
 
@@ -50,7 +56,7 @@ def json_benchmarks(data, file_path: str, file_name: str):
         json.dump(benchmarks, f)
 
 
-def obtain_data(saving_file: tuple):
-    ratios = get_ready_ratios_data(saving_file[0], saving_file[1])
-    json_benchmarks(ratios, saving_file[0], saving_file[1])
+def obtain_data(file_name):
+    ratios = get_ready_ratios_data(file_name)
+    json_benchmarks(ratios, file_name)
 

@@ -1,0 +1,2 @@
+class InsufficientArgumentError(Exception):
+    pass
