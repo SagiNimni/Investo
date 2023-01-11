@@ -28,6 +28,7 @@
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="ContextMenu" Value="{StaticResource ListItemContextMenu}"/>
+                                <EventSetter Event="MouseDoubleClick" Handler="ShowList"/> 
                             </Style>
                         </ListBox.ItemContainerStyle>
                     </ListBox>

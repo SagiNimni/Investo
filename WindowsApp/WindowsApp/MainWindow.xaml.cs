@@ -28,6 +28,7 @@ namespace WindowsApp
     {
         public ObservableCollection<string> ListsNames { get; set; } = new ObservableCollection<string>();
         private FileSystemWatcher watcher = new FileSystemWatcher();
+        private StocksListDataWindow listDataWindow = null;
 
         public MainWindow()
         {
@@ -107,6 +108,19 @@ namespace WindowsApp
                 proc.Start();
                 proc.WaitForExit();
             }
+        }
+
+        private void ShowList(object sender, MouseButtonEventArgs e)
+        {
+            if (listDataWindow != null)
+            {
+                if (listDataWindow.ShowActivated == false)
+                    listDataWindow.Show();
+                else
+                    listDataWindow.Close();
+            }
+            listDataWindow = new StocksListDataWindow();
+            listDataWindow.Show();
         }
     }
 }
