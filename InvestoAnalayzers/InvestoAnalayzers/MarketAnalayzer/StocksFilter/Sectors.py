@@ -1,5 +1,4 @@
 import time
-
 from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import GrowthRatiosConstants as growthConstants
 from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import BENCHMARKS_FILE_NAME
 import pandas as pd
@@ -11,13 +10,16 @@ import json
 # Ratios
 class Ratios:
 
+    def __init__(self, ratios: pd.DataFrame):
+        self.ratios = ratios
+
     def _test_each_year_(self, constants, year):
         tests = {}
         index = date.today().year-1 - int(year)
 
         for ratio, values in self.ratios.items():
             try:
-                tests.update({ratio: (values[0][index] / constants.ratios[ratio])[0]})
+                tests.update({ratio: (values[index] / constants[ratio])[0]})
 
             except TypeError:
                 continue
@@ -30,22 +32,19 @@ class Ratios:
 
 class GrowthRatios(Ratios):
 
-    def __init__(self, roic, sgr, eps, bvps, fcf):
-        self.ratios = pd.DataFrame({'roic': [roic],
-                                    'sgr': [sgr],
-                                    'eps': [eps],
-                                    'bvps': [bvps],
-                                    'fcf': [fcf]})
+    def __init__(self, ratios: pd.DataFrame):
+        super().__init__(ratios)
 
     def compare_to_constants(self, max_years):
 
         tests = {}
         for ratio, values in self.ratios.items():
-            tests.update({ratio: values[0][:max_years].mean() >= Sector.GROWTH_CONSTANTS.ratios[ratio][0]})
+            tests.update({ratio: values[:max_years].mean() >= Sector.GROWTH_CONSTANTS.ratios[ratio][0]})
 
         return tests
 
     def plot(self, name):
+        # TODO fix plot function
         df = pd.concat([self.eps, self.roic, self.sgr, self.bvps, self.fcf], axis=1).iloc[::-1]
         df.columns = ['EPS', 'ROIC', 'SGR', 'BVPS', 'FCF']
         df.index = list(range(date.today().year - df.shape[0], date.today().year))
@@ -55,17 +54,15 @@ class GrowthRatios(Ratios):
 
 class LiquidityRatios(Ratios):
 
-    def __init__(self, current_ratio, quick_ratio, cash_ratio):
-        self.ratios = pd.DataFrame({'current-ratio': [current_ratio],
-                                    'quick-ratio': [quick_ratio],
-                                    'cash-ratio': [cash_ratio]})
+    def __init__(self, ratios: pd.DataFrame):
+        super().__init__(ratios)
 
     def compare_to_benchmarks(self, sic):
         tests = {}
         for year, benchmarks in Sector.BENCHMARKS_PER_SIC.items():
-            benchmarks = LiquidityRatios(benchmarks['CurrentRatio' + sic],
-                                         benchmarks['QuickRatio' + sic],
-                                         benchmarks['CashRatio' + sic])
+            benchmarks = pd.DataFrame([{'currentRatio': benchmarks['CurrentRatio' + sic],
+                                       'quickRatio': benchmarks['QuickRatio' + sic],
+                                        'cashRatio': benchmarks['CashRatio' + sic]}])
             tests.update({year: self._test_each_year_(benchmarks, year)})
 
         return pd.DataFrame(tests).transpose()
@@ -73,17 +70,15 @@ class LiquidityRatios(Ratios):
 
 class LeverageRatios(Ratios):
 
-    def __init__(self, debt_ratio, debt_to_equity_ratio, interest_coverage_ratio):
-        self.ratios = pd.DataFrame({'debt-ratio': [debt_ratio],
-                                    'debt-to-equity-ratio': [debt_to_equity_ratio],
-                                    'interest-coverage': [interest_coverage_ratio]})
+    def __init__(self, ratios: pd.DataFrame):
+        super().__init__(ratios)
 
     def compare_to_benchmarks(self, sic):
         tests = {}
         for year, benchmarks in Sector.BENCHMARKS_PER_SIC.items():
-            benchmarks = LeverageRatios(benchmarks['DebtRatio' + sic],
-                                        benchmarks['DebtToEquityRatio' + sic],
-                                        benchmarks['InterestCoverageRatio' + sic])
+            benchmarks = pd.DataFrame([{'debtRatio': benchmarks['DebtRatio' + sic],
+                                        'debtEquityRatio': benchmarks['DebtToEquityRatio' + sic],
+                                        'interestCoverageRatio': benchmarks['InterestCoverageRatio' + sic]}])
             tests.update({year: self._test_each_year_(benchmarks, year)})
 
         return pd.DataFrame(tests).transpose()
@@ -91,17 +86,15 @@ class LeverageRatios(Ratios):
 
 class EfficiencyRatios(Ratios):
 
-    def __init__(self, inventory_turnover, assets_turnover, receivables_turnover):
-        self.ratios = pd.DataFrame({'inventory-turnover': [inventory_turnover],
-                                    'assets-turnover': [assets_turnover],
-                                    'receivables_turnover': [receivables_turnover]})
+    def __init__(self, ratios: pd.DataFrame):
+        super().__init__(ratios)
 
     def compare_to_benchmarks(self, sic):
         tests = {}
         for year, benchmarks in Sector.BENCHMARKS_PER_SIC.items():
-            benchmarks = EfficiencyRatios(benchmarks['InventoryTurnover' + sic],
-                                          benchmarks['AssetTurnover' + sic],
-                                          benchmarks['ReceivablesTurnover' + sic])
+            benchmarks = pd.DataFrame([{'inventoryTurnover': benchmarks['InventoryTurnover' + sic],
+                                        'assetTurnover': benchmarks['AssetTurnover' + sic],
+                                        'receivablesTurnover': benchmarks['ReceivablesTurnover' + sic]}])
             tests.update({year: self._test_each_year_(benchmarks, year)})
 
         return pd.DataFrame(tests).transpose()
@@ -109,21 +102,17 @@ class EfficiencyRatios(Ratios):
 
 class ProfitabilityRatios(Ratios):
 
-    def __init__(self, gross_margin, operating_margin, return_on_assets, return_on_equity, profit_margin):
-        self.ratios = pd.DataFrame({'gross_margin': [gross_margin],
-                                    'operating_margin': [operating_margin],
-                                    'return_on_assets': [return_on_assets],
-                                    'return_on_equity': [return_on_equity],
-                                    'profit_margin': [profit_margin]})
+    def __init__(self, ratios: pd.DataFrame):
+        super().__init__(ratios)
 
     def compare_to_benchmarks(self, sic):
         tests = {}
         for year, benchmarks in Sector.BENCHMARKS_PER_SIC.items():
-            benchmarks = ProfitabilityRatios(benchmarks['GrossMargin' + sic],
-                                             benchmarks['OperatingMargin' + sic],
-                                             benchmarks['RoeAfterTax' + sic],
-                                             benchmarks['Roa' + sic],
-                                             benchmarks['ProfitMargin' + sic])
+            benchmarks = pd.DataFrame([{'grossProfitMargin': benchmarks['GrossMargin' + sic],
+                                        'operatingProfitMargin': benchmarks['OperatingMargin' + sic],
+                                        'returnOnAssets': benchmarks['RoeAfterTax' + sic],
+                                        'returnOnEquity': benchmarks['Roa' + sic],
+                                        'netProfitMargin': benchmarks['ProfitMargin' + sic]}])
             tests.update({year: self._test_each_year_(benchmarks, year)})
 
         return pd.DataFrame(tests).transpose()
@@ -132,15 +121,14 @@ class ProfitabilityRatios(Ratios):
 # TODO add PE ratio per sector
 class MarketValueRatios(Ratios):
 
-    def __init__(self, price_earning, dividend_yield):
-        self.ratios = pd.DataFrame({'price-earnings': [price_earning],
-                                    'dividend_yield': [dividend_yield]})
+    def __init__(self, ratios: pd.DataFrame):
+        super().__init__(ratios)
 
     def compare_to_benchmarks(self, sic):
         tests = {}
         for year, benchmarks in Sector.BENCHMARKS_PER_SIC.items():
-            benchmarks = MarketValueRatios(10.0,
-                                           benchmarks['DividendPayoutRatio' + sic])
+            benchmarks = pd.DataFrame([{'priceEarningsRatio': 10.0,
+                                       'dividendYield': benchmarks['DividendPayoutRatio' + sic]}])
             tests.update({year: self._test_each_year_(benchmarks, year)})
 
         return pd.DataFrame(tests).transpose()
@@ -148,11 +136,11 @@ class MarketValueRatios(Ratios):
 
 # Sectors
 class Sector:
-    GROWTH_CONSTANTS = GrowthRatios(growthConstants.RETURN_ON_INVESTED_CAPITAL,
-                                    growthConstants.SALES_GROWTH,
-                                    growthConstants.EARNING_PER_SHARE_GROWTH,
-                                    growthConstants.BOOK_VALUE_PER_SHARE_GROWTH,
-                                    growthConstants.FREE_CASH_FLOW_GROWTH)
+    GROWTH_CONSTANTS = GrowthRatios(pd.DataFrame(({'roic': growthConstants.RETURN_ON_INVESTED_CAPITAL,
+                                                   'revenueGrowth': growthConstants.SALES_GROWTH,
+                                                   'epsgrowth': growthConstants.EARNING_PER_SHARE_GROWTH,
+                                                   'bookValueperShareGrowth': growthConstants.BOOK_VALUE_PER_SHARE_GROWTH,
+                                                   'freeCashFlowGrowth': growthConstants.FREE_CASH_FLOW_GROWTH})))
 
     with open(BENCHMARKS_FILE_NAME + '.json') as f:
         BENCHMARKS_PER_SIC = json.load(f)
@@ -168,32 +156,18 @@ class Sector:
 
         self.name = name
 
-        self.liquidity = LiquidityRatios(ratios['currentRatio'],
-                                         ratios['quickRatio'],
-                                         ratios['cashRatio'])
+        self.liquidity = LiquidityRatios(ratios.loc[:, ['currentRatio', 'quickRatio', 'cashRatio']])
 
-        self.leverage = LeverageRatios(ratios['debtRatio'],
-                                       ratios['debtEquityRatio'],
-                                       ratios['interestCoverage'])
+        self.leverage = LeverageRatios(ratios.loc[:, ['debtRatio', 'debtEquityRatio', 'interestCoverage']])
 
-        self.efficiency = EfficiencyRatios(ratios['inventoryTurnover'],
-                                           ratios['assetTurnover'],
-                                           ratios['receivablesTurnover'])
+        self.efficiency = EfficiencyRatios(ratios.loc[:, ['inventoryTurnover', 'assetTurnover', 'receivablesTurnover']])
 
-        self.profitability = ProfitabilityRatios(ratios['grossProfitMargin'],
-                                                 ratios['operatingProfitMargin'],
-                                                 ratios['returnOnAssets'],
-                                                 ratios['returnOnEquity'],
-                                                 ratios['netProfitMargin'])
+        self.profitability = ProfitabilityRatios(ratios.loc[:, ['grossProfitMargin', 'operatingProfitMargin',
+                                                                'returnOnAssets', 'returnOnEquity', 'netProfitMargin']])
 
-        self.value = MarketValueRatios(ratios['priceEarningsRatio'],
-                                       ratios['dividendYield'])
+        self.value = MarketValueRatios(ratios.loc[:, ['priceEarningsRatio', 'dividendYield']])
 
-        self.growth = GrowthRatios(key_metrics['roic'] * 100,
-                                   growth['revenueGrowth'] * 100,
-                                   growth['epsgrowth'] * 100,
-                                   growth['bookValueperShareGrowth'] * 100,
-                                   growth['freeCashFlowGrowth'] * 100)
+        self.growth = GrowthRatios(growth.loc[:, ['revenueGrowth', 'epsgrowth', 'bookValueperShareGrowth', 'freeCashFlowGrowth']].assign(roic=pd.Series(key_metrics['roic'])) * 100)
 
     def liquidity_test(self):
         return self.liquidity.compare_to_benchmarks(self.sic).mean()

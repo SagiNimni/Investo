@@ -17,7 +17,7 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
     print("=============================")
     print("Starts Analysis...")
     time.sleep(0.1)
-    chosen_companies = {}
+    chosen_companies = pd.DataFrame([])
 
     for company, ratios in tqdm(financial_ratios.items(), colour='white'):
         growth_test = ratios.growth_rate_test(max_years, plot_graphs)
@@ -28,12 +28,12 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
             efficiency_grades = ratios.efficiency_test()
             profitability_grades = ratios.profitability_test()
             value_grades = ratios.market_value_test()
-            chosen_companies.update({company: {'growth': ratios.growth.ratios.mean(),
-                                               'liquidity': liquidity_grades,
-                                               'leverage': leverage_grades,
-                                               'efficiency': efficiency_grades,
-                                               'profitability': profitability_grades,
-                                               'value': value_grades}})
+            chosen_companies.loc[:, company] = pd.Series({'growth': ratios.growth.ratios.mean(),
+                                                          'liquidity': liquidity_grades,
+                                                          'leverage': leverage_grades,
+                                                          'efficiency': efficiency_grades,
+                                                          'profitability': profitability_grades,
+                                                          'value': value_grades})
 
     time.sleep(0.1)
     print("Analyze Completed")
@@ -42,6 +42,8 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
     if plot_result:
         for company, grades in chosen_companies.items():
             print(f'{company:.^20}' + ':\n')
+            print('Growth:')
+            print(grades['growth'], '\n')
             print('Efficiency Ratios:')
             print(grades['efficiency'], '\n')
             print('Liquidity Ratios:')
@@ -60,10 +62,7 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
 
         while not saved and time.time() - timeout < 20:
             try:
-                with pd.ExcelWriter(save) as writer:
-                    for symbol, grades in chosen_companies.items():
-                        grades = pd.concat(list(grades.values()))
-                        pd.DataFrame(grades).to_excel(writer, sheet_name=symbol)
+                chosen_companies.to_json(save)
                 saved = True
                 print("Successfully saved the results")
 

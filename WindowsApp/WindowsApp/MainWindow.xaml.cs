@@ -53,7 +53,8 @@ namespace WindowsApp
         private void OnFileCreated(object sender, FileSystemEventArgs e)
         {
             App.Current.Dispatcher.Invoke((Action)delegate {
-                ListsNames.Add(e.Name);
+                if (System.IO.Path.GetExtension(e.Name) == "")
+                    ListsNames.Add(e.Name);
             });
         }
 
@@ -112,6 +113,9 @@ namespace WindowsApp
 
         private void ShowList(object sender, MouseButtonEventArgs e)
         {
+            ListBoxItem listItem = (ListBoxItem)sender;
+            string listName = (string)listItem.DataContext;
+
             if (listDataWindow != null)
             {
                 if (listDataWindow.ShowActivated == false)
@@ -119,8 +123,14 @@ namespace WindowsApp
                 else
                     listDataWindow.Close();
             }
-            listDataWindow = new StocksListDataWindow();
-            listDataWindow.Show();
+
+            try
+            {
+                listDataWindow = new StocksListDataWindow(listName);
+                listDataWindow.Closing += (s, args) => listDataWindow = null;
+                listDataWindow.Show();
+            }
+            catch(InitializetionFailed ex) { }
         }
     }
 }

@@ -43,4 +43,4 @@ def extract_stocks(file_name, years_back, amount_of_stocks=1000, extract_market_
 
 def choose_stocks(file_name, years_back, logs=True):
     data = Extractor.load(file_name)
-    execute_analyze(data, max_years=years_back, plot_result=logs, save=f'{file_name}.xlsx')
+    execute_analyze(data, max_years=years_back, plot_result=logs, save=f'{file_name}.json')

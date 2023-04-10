@@ -1,5 +1,6 @@
 import math
 import sys
+import pandas as pd
 
 
 class BasicMarketConstants:
@@ -16,11 +17,11 @@ class BasicMarketConstants:
 
 # Optimal ratios
 class GrowthRatiosConstants:
-    RETURN_ON_INVESTED_CAPITAL = 10
-    EARNING_PER_SHARE_GROWTH = 10
-    SALES_GROWTH = 10
-    BOOK_VALUE_PER_SHARE_GROWTH = 10
-    FREE_CASH_FLOW_GROWTH = 10
+    RETURN_ON_INVESTED_CAPITAL = pd.Series(10)
+    EARNING_PER_SHARE_GROWTH = pd.Series(10)
+    SALES_GROWTH = pd.Series(10)
+    BOOK_VALUE_PER_SHARE_GROWTH = pd.Series(10)
+    FREE_CASH_FLOW_GROWTH = pd.Series(10)
 
 
 class PriceEarningPerSector:

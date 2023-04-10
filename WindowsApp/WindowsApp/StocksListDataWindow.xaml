@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowsApp"
         mc:Ignorable="d"
+        Topmost="True"
         Title="StocksListDataWindow" Height="450" Width="800">
+    
     <Grid>
-        
+        <ToolBar VerticalAlignment="Top">
+            <Button Click="FilterClicked">Filter</Button>
+            <Button Click="DeleteClicked">Delete</Button>
+        </ToolBar>
+        <Grid>
+            <ListBox x:Name="stocks" ItemsSource="{Binding stockNames}" FontSize="18" Margin="0,24,0,0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="ShowStockValues"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Grid>
     </Grid>
 </Window>
