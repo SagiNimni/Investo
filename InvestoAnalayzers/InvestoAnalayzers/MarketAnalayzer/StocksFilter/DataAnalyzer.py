@@ -1,9 +1,11 @@
+from functools import reduce
 from tqdm import tqdm
 import time
 import pandas as pd
+import numpy as np
 
 
-def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False, plot_graphs=False):
+def execute_growth_analyze(financial_ratios, max_years='', save=None, plot_result=False, plot_graphs=False):
     """
 
     :param financial_ratios:
@@ -76,3 +78,33 @@ def execute_analyze(financial_ratios, max_years='', save=None, plot_result=False
             print("Timeout, Could't save the results!")
 
     return chosen_companies
+
+
+def filter_by_ratios_type(companies_grades_list: pd.DataFrame, ratio_type: str, ascending: bool, save=None):
+
+    class RatiosTypesAscending:
+        liquidity = True
+        leverage = False
+        efficiency = True
+        profitability = True
+        value = False
+
+    def mean(values: list) -> float:
+        if None in values:
+            return np.NAN
+        return reduce(lambda x, y: x + y, values) / len(values)
+
+    try:
+        ratio_grades = companies_grades_list.loc[ratio_type].apply(lambda grades: mean(list(grades.values())))
+        if ascending:
+            ratio_grades = ratio_grades.sort_values(ascending=eval(f"RatiosTypesAscending.{ratio_type}"))
+        else:
+            ratio_grades = ratio_grades.iloc[np.abs(ratio_grades-1).argsort()]
+
+        if save is not None:
+            ratio_grades.to_json(save)
+            print("Succesfully sorted the list")
+        else:
+            return ratio_grades
+    except Exception as e:
+        print("Failed to sort the list", e)

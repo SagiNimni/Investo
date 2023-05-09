@@ -1,6 +1,7 @@
 import time
 from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import GrowthRatiosConstants as growthConstants
-from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import BENCHMARKS_FILE_NAME
+from InvestoAnalayzers.MarketAnalayzer.StocksFilter.constants import BENCHMARKS_FILE_NAME, BENCHMARKS_LATEST_YEAR
+from InvestoAnalayzers.MarketAnalayzer.StocksFilter.IndustryBenchmarks.ObtainData import obtain_benchmarks
 import pandas as pd
 from datetime import date
 import matplotlib.pyplot as plt
@@ -15,11 +16,11 @@ class Ratios:
 
     def _test_each_year_(self, constants, year):
         tests = {}
-        index = date.today().year-1 - int(year)
+        index = BENCHMARKS_LATEST_YEAR - int(year)
 
         for ratio, values in self.ratios.items():
             try:
-                tests.update({ratio: (values[index] / constants[ratio])[0]})
+                tests.update({ratio: values[index] / float(constants[ratio][0])})
 
             except TypeError:
                 continue
@@ -142,7 +143,8 @@ class Sector:
                                                    'bookValueperShareGrowth': growthConstants.BOOK_VALUE_PER_SHARE_GROWTH,
                                                    'freeCashFlowGrowth': growthConstants.FREE_CASH_FLOW_GROWTH})))
 
-    with open(BENCHMARKS_FILE_NAME + '.json') as f:
+    obtain_benchmarks(BENCHMARKS_FILE_NAME)
+    with open(BENCHMARKS_FILE_NAME) as f:
         BENCHMARKS_PER_SIC = json.load(f)
 
     def __init__(self, name, ratios, growth, key_metrics, sic):

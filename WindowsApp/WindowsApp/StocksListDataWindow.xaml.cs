@@ -21,6 +21,9 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Transactions;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace WindowsApp
 {
@@ -49,9 +52,12 @@ namespace WindowsApp
 
     public partial class StocksListDataWindow : System.Windows.Window
     {
+        private FileSystemWatcher watcher = new FileSystemWatcher();
         public ObservableCollection<string> stockNames { get; set; } = new ObservableCollection<string>();
 
         private string listName;
+        private string json_path;
+        private string sorting_path;
         private Dictionary<string, Ratios> listData;
 
 
@@ -61,9 +67,13 @@ namespace WindowsApp
             this.listName = listName;
             DataContext = this;
 
+            this.json_path = Constants.savedDataPath() + listName + "\\" + listName + ".json";
+            this.sorting_path = Constants.savedDataPath() + listName + "\\sorted.json";
+
             try
             {
-                string json_path = Constants.savedDataPath() + listName + ".json";
+
+
                 if (!File.Exists(json_path))
                 {
                     MessageBoxResult decision = MessageBox.Show("This list is not filtered. Do you want to filter it?", "Confirm Filter", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -77,68 +87,106 @@ namespace WindowsApp
                     }
                 }
 
-                listData = readDataFromJson(json_path);
-                foreach (string symbol in (listData.Keys))
+                listData = readDataFromJson<Ratios>(json_path);
+
+                string[] sort = null;
+                if (File.Exists(sorting_path))
+                    sort = readDataFromJson<float>(sorting_path).Keys.ToArray();
+                else
+                    sort = listData.Keys.ToArray();
+
+                foreach (string symbol in sort)
                 {
                     stockNames.Add(symbol);
                 }
             }
-            catch(Exception ex)
+
+            catch (Exception ex)
             {
                 MessageBox.Show("Failed to open this list");
                 throw new InitializetionFailed("Failed to open the stock's list", ex);
             }
+
+
+            watcher.Path = Constants.savedDataPath() + listName;
+            watcher.Filter = "sorted.json";
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
+            watcher.Changed += new FileSystemEventHandler(OnNewSort);
+            watcher.EnableRaisingEvents = true;
         }
 
-        private Dictionary<string, Ratios> readDataFromJson(string fileName)
+        public string getListName()
         {
-            string json = File.ReadAllText(fileName);
+            return this.listName;
+        }
 
-            dynamic data = JsonConvert.DeserializeObject<dynamic>(json);
+        private void OnNewSort(object sender, FileSystemEventArgs e)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(() => this.stockNames.Clear());
 
-            Dictionary<string, Ratios> dict = new Dictionary<string, Ratios>();
-            foreach (JProperty property in data)
-            { 
-                dict.Add(property.Value.Path, property.Value.ToObject<Ratios>());
+            foreach (string symbol in readDataFromJson<float>(sorting_path).Keys)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() => this.stockNames.Add(symbol));
             }
 
-            return dict;
+
         }
 
+        private Dictionary<string, T> readDataFromJson<T>(string fileName)
+        {
+
+            using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (StreamReader reader = new StreamReader(fs))
+            {
+                string json = reader.ReadToEnd();
+                dynamic data = JsonConvert.DeserializeObject<dynamic>(json);
+
+                Dictionary<string, T> dict = new Dictionary<string, T>();
+                foreach (JProperty property in data)
+                {
+                    string company = property.Value.Path;
+                    company = company.Replace("[", "").Replace("]", "").Replace("'", "");
+
+                    dict.Add(company, property.Value.ToObject<T>());
+                }
+
+                return dict;
+            }
+
+        }
 
         private void FilterList()
         {
-                        string listPath = Constants.savedDataPath() + listName;
+            string listPath = Constants.savedDataPath() + listName;
 
             if (System.IO.File.Exists(listPath))
             {
                 string parameters = listPath +
                                     " 10";
                 string extractStocksExe = System.IO.Path.Combine(Constants.pythonScriptsPath(), "FilterStocks.exe");
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = "CMD.EXE";
-                startInfo.Arguments = "/K " + extractStocksExe + " " + parameters;
-                startInfo.WindowStyle = ProcessWindowStyle.Normal;
+                Utils.ExecuteScript(extractStocksExe, parameters);
 
-                Process proc = new Process();
-                proc.StartInfo = startInfo;
-                proc.Start();
-                proc.WaitForExit();
             }
         }
 
-        private void FilterClicked(object sender, RoutedEventArgs e)
+        private void SortClicked(object sender, RoutedEventArgs e)
         {
-
+            SortOptions optionsPage = new SortOptions(this);
+            optionsPage.Show();
         }
 
         private void DeleteClicked(object sender, RoutedEventArgs e)
         {
             string listPath = Constants.savedDataPath() + listName;
 
-            if (System.IO.File.Exists(listPath))
+            if (Directory.Exists(listPath))
             {
-                System.IO.File.Delete(listPath);
+                DirectoryInfo dir = new DirectoryInfo(listPath);
+                foreach (FileInfo file in dir.EnumerateFiles())
+                {
+                    file.Delete();
+                }
+                dir.Delete();
             }
 
             Close();
@@ -150,7 +198,6 @@ namespace WindowsApp
             string stockName = (string)listItem.DataContext;
 
             dynamic values = listData[stockName];
-            Console.WriteLine("s");
         }
     }
 }

@@ -10,7 +10,7 @@
     
     <Grid>
         <ToolBar VerticalAlignment="Top">
-            <Button Click="FilterClicked">Filter</Button>
+            <Button Click="SortClicked">Sort</Button>
             <Button Click="DeleteClicked">Delete</Button>
         </ToolBar>
         <Grid>

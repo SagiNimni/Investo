@@ -36,14 +36,13 @@ namespace WindowsApp
             stocksLists.DataContext = this;
 
             DirectoryInfo dataDirectory = new DirectoryInfo(Constants.savedDataPath());
-            foreach (FileInfo file in dataDirectory.GetFiles())
+            foreach (DirectoryInfo data_directory in dataDirectory.GetDirectories())
             {
-                if (System.IO.Path.GetExtension(file.Name) == "")
-                    ListsNames.Add(file.Name);
+                ListsNames.Add(data_directory.Name);
             }
 
             watcher.Path = Constants.savedDataPath();
-            watcher.NotifyFilter = NotifyFilters.FileName;
+            watcher.NotifyFilter = NotifyFilters.DirectoryName;
             watcher.Created += OnFileCreated;
             watcher.Deleted += OnFileDeleted;
             watcher.EnableRaisingEvents = true;
@@ -53,8 +52,7 @@ namespace WindowsApp
         private void OnFileCreated(object sender, FileSystemEventArgs e)
         {
             App.Current.Dispatcher.Invoke((Action)delegate {
-                if (System.IO.Path.GetExtension(e.Name) == "")
-                    ListsNames.Add(e.Name);
+                ListsNames.Add(e.Name);
             });
         }
 
@@ -78,12 +76,18 @@ namespace WindowsApp
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             ListBoxItem listItem = (ListBoxItem)contextMenu.PlacementTarget;
             string listName = (string)listItem.DataContext;
-            string listPath = Constants.savedDataPath() + listName; 
+            string listPath = Constants.savedDataPath() + listName;
 
-            if (File.Exists(listPath)) 
+            if (Directory.Exists(listPath))
             {
-                File.Delete(listPath);
+                DirectoryInfo dir = new DirectoryInfo(listPath);
+                foreach (FileInfo file in dir.EnumerateFiles())
+                {
+                    file.Delete();
+                }
+                dir.Delete();
             }
+            
         }
 
         private void FilterClicked(object sender, RoutedEventArgs e)
@@ -92,22 +96,14 @@ namespace WindowsApp
             ContextMenu contextMenu = (ContextMenu)menuItem.Parent;
             ListBoxItem listItem = (ListBoxItem)contextMenu.PlacementTarget;
             string listName = (string)listItem.DataContext;
-            string listPath = Constants.savedDataPath() + listName;
+            string listPath = Constants.savedDataPath() + listName + "\\"+ listName;
 
             if (File.Exists(listPath))
             {
                 string parameters = listPath +
                                     " 10";
                 string extractStocksExe = System.IO.Path.Combine(Constants.pythonScriptsPath(), "FilterStocks.exe");
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-                startInfo.FileName = "CMD.EXE";
-                startInfo.Arguments = "/K " + extractStocksExe + " " + parameters;
-                startInfo.WindowStyle = ProcessWindowStyle.Normal;
-
-                Process proc = new Process();
-                proc.StartInfo = startInfo;
-                proc.Start();
-                proc.WaitForExit();
+                Utils.ExecuteScript(extractStocksExe, parameters);
             }
         }
 

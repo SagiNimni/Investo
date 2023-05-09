@@ -24,7 +24,7 @@ namespace WindowsApp
             string path = AppDomain.CurrentDomain.BaseDirectory;
             path = path.Remove(path.LastIndexOfAny(new char[] { '\\' }, path.LastIndexOf('\\') - 1));
             path = String.Join(@"\", path.Split('\\').Reverse().Skip(2).Reverse());
-            return path + "\\stocksData\\";
+            return path + "\\stocksData\\lists\\";
         }
     }
 }

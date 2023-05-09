@@ -28,5 +28,6 @@ class PriceEarningPerSector:
     pass
 
 
-BENCHMARKS_FILE_NAME = sys.argv[1].rsplit('\\', 1)[0].replace('\\', '/') + '/IndustryBenchmarks/benchmarks'
+BENCHMARKS_FILE_NAME = sys.argv[1].rsplit('\\', 3)[0].replace('\\', '/') + '/IndustryBenchmarks/benchmarks.json'
+BENCHMARKS_LATEST_YEAR = 2020
 

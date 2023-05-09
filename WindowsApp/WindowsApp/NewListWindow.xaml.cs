@@ -83,21 +83,13 @@ namespace WindowsApp
             }
 
             // Start proccess 
-            string parameters = Constants.savedDataPath() + ListName.Text +
+            string parameters = Constants.savedDataPath() + ListName.Text + "\\" + ListName.Text +
                                 " " + YearsBack.Text +
                                 " amount_of_stocks=" + ListSize.Text +
                                 " extract_market_cap=" + marketCapParameter +
                                 " sectors=" + sectors;
             string extractStocksExe = System.IO.Path.Combine(Constants.pythonScriptsPath(), "ExtractStocks.exe");
-            ProcessStartInfo startInfo= new ProcessStartInfo();
-            startInfo.FileName= "CMD.EXE";
-            startInfo.Arguments = "/K " + extractStocksExe + " " + parameters;
-            startInfo.WindowStyle = ProcessWindowStyle.Normal;
-            
-            Process proc = new Process();
-            proc.StartInfo = startInfo;
-            proc.Start();
-            proc.WaitForExit();
+            Utils.ExecuteScript(parameters, extractStocksExe);
 
             Close();
         } 

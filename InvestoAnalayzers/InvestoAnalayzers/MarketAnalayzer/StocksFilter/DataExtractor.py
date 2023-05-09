@@ -103,7 +103,12 @@ class Extractor(object):
 
                     core_info = requests.get(f'{Extractor.FMP_API_V4}/company-core-information?symbol={company}&apikey={Extractor.API_KEY}').json()
                     if core_info:
-                        sic_code = pd.DataFrame.from_dict(core_info)['sicCode'][0][:2]
+                        if core_info:
+                            sic_code = core_info[0]['sicCode']
+                            if sic_code is None:
+                                sic_code = '00'
+                            else:
+                                sic_code = sic_code[:2]
                     else:
                         sic_code = '00'
 
@@ -156,6 +161,10 @@ class Extractor(object):
         """
 
         try:
+            path = file_name.rsplit('\\', 1)[0]
+            if not os.path.exists(path):
+                os.mkdir(path)
+
             with open(file_name, 'wb') as f:
                 pickle.dump(self.financial_ratios, f)
         except Exception as e:
